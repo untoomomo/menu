@@ -1,0 +1,353 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
+    <title>選擇菜單語言</title>
+    
+    <!-- 引入 Swiper.js 的 CSS -->
+    <link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css">
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: Arial, sans-serif; }
+        body { background-color: #000; display: flex; align-items: center; justify-content: center; height: 100vh; overflow: hidden; }
+
+        /* 基本頁面設計 */
+        .language-selection, .language-buttons, .back-icon, .modal {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        /* 語言選擇畫面 */
+        .language-selection {
+            flex-direction: column;
+            background: rgba(0, 0, 0, 0.85);
+            position: fixed;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1000;
+        }
+
+        .language-title {
+            color: white;
+            font-size: 26px;
+            margin-bottom: 10px;
+            font-weight: bold;
+        }
+
+        .language-subtitle {
+            font-size: 18px;
+            display: block;
+            margin-top: 5px;
+        }
+
+        .language-buttons {
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .language-button {
+            padding: 14px 20px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            background: linear-gradient(135deg, #FF7E5F, #FD3A69);
+            color: white;
+            font-weight: bold;
+            width: 220px;
+            text-align: center;
+            transition: all 0.3s ease-in-out;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .language-button:hover {
+            background: linear-gradient(135deg, #FD3A69, #FF1E56);
+            transform: scale(1.05);
+        }
+
+        /* 內用與外帶按鈕 */
+        .takeout-button, .dine-in-button {
+            margin-top: 20px;
+            transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
+        }
+
+        .takeout-button {
+            background: linear-gradient(135deg, #FF8C00, #FF7F32);
+        }
+
+        .takeout-button:hover {
+            background: linear-gradient(135deg, #FF7F32, #FF8C00);
+            transform: scale(1.05);
+        }
+
+        .dine-in-button {
+            background: linear-gradient(135deg, #32CD32, #228B22);
+        }
+
+        .dine-in-button:hover {
+            background: linear-gradient(135deg, #228B22, #006400);
+            transform: scale(1.05);
+        }
+
+        /* Swiper 容器 */
+        .swiper-container {
+            width: 100vw;
+            height: 100vh;
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .swiper-slide {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .swiper-zoom-container img {
+            max-width: 100%;
+            max-height: 90vh;
+            object-fit: contain;
+            user-select: none;
+            transition: transform 0.2s ease;
+        }
+
+        /* 返回圖示 */
+        .back-icon {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1001;
+        }
+
+        .back-icon.show {
+            opacity: 1;
+        }
+
+        .back-icon img {
+            width: 30px;
+            height: 30px;
+            background-color: transparent;
+        }
+
+        .back-icon-left {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            cursor: pointer;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1001;
+        }
+
+        .back-icon-left.show {
+            opacity: 1;
+        }
+
+        .back-icon-left img {
+            width: 30px;
+            height: 30px;
+            background-color: transparent;
+        }
+
+        /* 提示框 */
+        .modal {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-color: white;
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: none;
+            z-index: 1002;
+            width: 80%;
+            max-width: 400px;
+        }
+
+        .modal h3 {
+            margin-bottom: 20px;
+        }
+
+        .modal button {
+            padding: 10px 20px;
+            background-color: #FD3A69;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .modal button:hover {
+            background-color: #FF1E56;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- 語言選擇畫面 -->
+    <div class="language-selection" id="languageSelection">
+        <div class="language-title">
+            用餐方式
+            <span class="language-subtitle">Dining Options</span>
+            <span class="language-subtitle">食事方法を選択</span>
+        </div>
+        <div class="language-buttons">
+            <button class="language-button dine-in-button" onclick="chooseDineIn()">內用菜單<br>Dine-In Menu</br></button>
+            <button class="language-button takeout-button" onclick="chooseFestival()">節慶菜單<br>Takeout Menu</br></button>
+        </div>
+    </div>
+
+    <!-- 菜單語言選擇 -->
+    <div class="language-selection" id="menuLanguageSelection" style="display:none;">
+        <div class="language-title">
+            請選擇語言
+            <span class="language-subtitle">Select Language</span>
+            <span class="language-subtitle">言語を選択</span>
+        </div>
+        <div class="language-buttons">
+            <button class="language-button" onclick="chooseLanguage('cn')">菜單 (中文)</button>
+            <button class="language-button" onclick="chooseLanguage('en')">Menu (English)</button>
+            <button class="language-button" onclick="chooseLanguage('jp')">メニュー (日本語)</button>
+        </div>
+        <div class="back-icon-left show" id="backIconLeft" onclick="goBackLanguageSelection()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M19 12H5"></path>
+                <path d="M12 5l-7 7 7 7"></path>
+            </svg>
+        </div>
+    </div>
+
+    <!-- 菜單顯示容器 -->
+    <div class="swiper-container" id="menuContainer">
+        <div class="swiper-wrapper" id="menuWrapper"></div>
+    </div>
+
+    <!-- 返回圖示 -->
+    <div class="back-icon" id="backIcon" onclick="goBack()">
+        <svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M19 12H5"></path>
+            <path d="M12 5l-7 7 7 7"></path>
+        </svg>
+    </div>
+
+    <!-- 提示框 -->
+    <div class="modal" id="modal">
+        <h3 id="modalText">如果您選好餐點或有任何問題，請尋求服務人員協助。</h3>
+        <button onclick="closeModal()">確認</button>
+    </div>
+
+    <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
+
+    <script>
+        var swiper;
+        var menus = {
+            cn: ["menu_cn_page1.png", "menu_cn_page2.png", "menu_cn_page3.png", "menu_cn_page4.png", "menu_cn_page5.png", "menu_cn_page6.png","menu_cn_page7.png", "menu_cn_page8.png", "menu_cn_page9.png", "menu_cn_page10.png", "menu_cn_page11.png", "menu_cn_page12.png","menu_cn_page13.png"],
+            en: ["menu_en_page1.png", "menu_en_page2.png", "menu_en_page3.png", "menu_en_page4.png", "menu_en_page5.png", "menu_en_page6.png","menu_en_page7.png", "menu_en_page8.png", "menu_en_page9.png", "menu_en_page10.png", "menu_en_page11.png", "menu_en_page12.png","menu_en_page13.png"],
+            jp: ["menu_jp_page1.png", "menu_jp_page2.png", "menu_jp_page3.png", "menu_jp_page4.png", "menu_jp_page5.png", "menu_jp_page6.png","menu_jp_page7.png", "menu_jp_page8.png", "menu_jp_page9.png", "menu_jp_page10.png", "menu_jp_page11.png", "menu_jp_page12.png","menu_jp_page13.png"],
+            ft: ["menu_jp_page1.png", "menu_jp_page2.png", "menu_jp_page3.png"]
+        };
+
+        function initSwiper() {
+            swiper = new Swiper('.swiper-container', {
+                loop: false,
+                touchEventsTarget: 'container',
+                pagination: false,
+                zoom: { maxRatio: 2, minRatio: 1, toggle: false },
+                allowTouchMove: true,
+                speed: 300
+            });
+        }
+
+        function showElement(id, show) {
+            document.getElementById(id).style.display = show ? 'flex' : 'none';
+        }
+
+        function chooseDineIn() {
+            showElement("languageSelection", false);
+            showElement("menuLanguageSelection", true);
+            showElement("backIcon", true);
+        }
+
+        function chooseFestival() {
+            showElement("languageSelection", false);
+            showElement("menuContainer", true);
+            switchMenu('ft');
+            showElement("backIcon", true);
+        }
+
+        function chooseLanguage(lang) {
+            showElement("menuLanguageSelection", false);
+            showElement("menuContainer", true);
+            switchMenu(lang);
+            showElement("backIcon", true);
+            setTimeout(function() {
+                showModal(lang);
+            }, 0);
+        }
+
+        function switchMenu(lang) {
+            let menuWrapper = document.getElementById("menuWrapper");
+            menuWrapper.innerHTML = "";
+
+            menus[lang].forEach(src => {
+                let slide = document.createElement("div");
+                slide.className = "swiper-slide";
+                slide.innerHTML = `<div class="swiper-zoom-container" ondblclick="toggleZoom(this)"><img src="${src}" alt="菜單"></div>`;
+                menuWrapper.appendChild(slide);
+            });
+
+            swiper.update();
+        }
+
+        function toggleZoom(element) {
+            let img = element.querySelector("img");
+            img.style.transform = img.style.transform === "scale(2)" ? "scale(1)" : "scale(2)";
+        }
+
+        function goBack() {
+            showElement("menuContainer", false);
+            showElement("menuLanguageSelection", true);
+            showElement("languageSelection", false);
+            showElement("backIcon", false);
+        }
+
+        function goBackLanguageSelection() {
+            showElement("menuLanguageSelection", false);
+            showElement("languageSelection", true);
+            showElement("backIcon", false);
+        }
+
+        function showModal(lang) {
+            let modalText = document.getElementById("modalText");
+            if (lang === "cn") {
+                modalText.innerHTML = "如果您選好餐點或有任何問題，請尋求服務人員協助。<br> If you have selected your dish or have any questions, please ask the staff for assistance.";
+            } else if (lang === "en") {
+                modalText.innerHTML = "If you have selected your dish or have any questions, please ask the staff for assistance.";
+            } else if (lang === "jp") {
+                modalText.innerHTML = "料理を選んだり、質問があればスタッフにお問い合わせください。";
+            }
+            showElement("modal", true);
+            setTimeout(function() {
+                closeModal();
+            }, 8000);
+        }
+
+        function closeModal() {
+            showElement("modal", false);
+        }
+
+        window.onload = initSwiper;
+    </script>
+
+</body>
+</html>
