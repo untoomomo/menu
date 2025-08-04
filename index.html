@@ -79,11 +79,22 @@
         }
 
         /* 內用與外帶按鈕 */
-        .takeout-button, .dine-in-button {
-            margin-top: 20px;
-            transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
-        }
+       .takeout-button, .dine-in-button {
+    margin-top: 20px;
+    transition: background 0.3s ease-in-out, transform 0.3s ease-in-out;
 
+    width: 100px;          /* 寬高設定為一樣 */
+    height: 100px;
+    padding: 0;            /* 移除內距 */
+    border-radius: 50%;    /* 圓形 */
+    display: flex;         /* 置中內容 */
+    align-items: center;
+    justify-content: center;
+    font-size: 16px;
+    text-align: center;
+    line-height: 1.2;
+    white-space: normal;   /* 允許文字換行 */
+}
         .takeout-button {
             background: linear-gradient(135deg, #FF8C00, #FF7F32);
         }
