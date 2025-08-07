@@ -36,8 +36,16 @@
         }
         
         /* 其他頁面仍維持黑色背景或透明背景（選擇語言那頁） */
-        #menuLanguageSelection {
-            background: rgba(0, 0, 0, 0.85);
+       .second-page {
+    display: none;
+    height: 100vh;
+    background-image: url('green2.JPG');  /* 換成跟首頁一樣的背景圖 */
+    background-size: cover;
+    background-position: center;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
         }
                     
         .language-title {
@@ -64,7 +72,7 @@
             border: none;
             border-radius: 10px;
             cursor: pointer;
-            background: linear-gradient(135deg, #FF7E5F, #FD3A69);
+            background: linear-gradient(135deg, #E44A28, #C7371E);
             color: white;
             font-weight: bold;
             width: 220px;
@@ -74,7 +82,7 @@
         }
 
         .language-button:hover {
-            background: linear-gradient(135deg, #FD3A69, #FF1E56);
+            background: linear-gradient(135deg, #C7371E, #A12A17);
             transform: scale(1.05);
         }
 
