@@ -276,7 +276,7 @@
     <!-- 提示框 -->
     <div class="modal" id="modal">
         <h3 id="modalText">如果您要點餐或有任何問題，請按服務鈴。</h3>
-        <button onclick="closeModal()">OK</button>
+        <button onclick="closeModal()">確認</button>
     </div>
 
     <script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
@@ -363,7 +363,7 @@
         function showModal(lang) {
             let modalText = document.getElementById("modalText");
             if (lang === "cn") {
-                modalText.innerHTML = "如果您選好餐點或有任何問題，請尋求服務人員協助。<br> If you have selected your dish or have any questions, please ask the staff for assistance.";
+                modalText.innerHTML = "如果您要點餐或有任何問題，請按服務鈴。<br> If you have selected your dish or have any questions, please ask the staff for assistance.";
             } else if (lang === "en") {
                 modalText.innerHTML = "If you have selected your dish or have any questions, please ask the staff for assistance.";
             } else if (lang === "jp") {
